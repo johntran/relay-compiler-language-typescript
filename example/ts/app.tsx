@@ -15,8 +15,15 @@ import 'todomvc-common';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {installRelayDevTools} from 'relay-devtools';
+import createRender from 'found/lib/createRender';
+import { Resolver } from 'found-relay';
+import ScrollManager from 'found-scroll/lib/ScrollManager';
 
+import FarceActions from 'farce/lib/Actions';
+import createConnectedRouter from 'found/lib/createConnectedRouter';
+
+import {installRelayDevTools} from 'relay-devtools';
+import { Provider } from 'react-redux';
 import {
   QueryRenderer,
   graphql,
@@ -28,7 +35,7 @@ import {
   Store,
 } from 'relay-runtime';
 
-import TodoApp from './components/TodoApp';
+import store from './reduxStore';
 
 // Useful for debugging, but remember to remove for a production deploy.
 installRelayDevTools();
@@ -53,29 +60,25 @@ function fetchQuery(
   });
 }
 
-const modernEnvironment = new Environment({
+const environment = new Environment({
   network: Network.create(fetchQuery),
   store: new Store(new RecordSource()),
 });
 
+store.dispatch(FarceActions.init());
+const render = createRender({});
+
+const RenderScrollManager = (renderArgs: any) => (
+  <ScrollManager renderArgs={renderArgs}>{render(renderArgs)}</ScrollManager>
+);
+
+const ConnectedRouter = createConnectedRouter({
+  render: RenderScrollManager,
+});
+
 ReactDOM.render(
-  <QueryRenderer
-    environment={modernEnvironment}
-    query={graphql`
-      query appQuery {
-        viewer {
-          ...TodoApp_viewer
-        }
-      }
-    `}
-    variables={{}}
-    render={({error, props}) => {
-      if (props) {
-        return <TodoApp viewer={props.viewer} />;
-      } else {
-        return <div>Loading</div>;
-      }
-    }}
-  />,
+  <Provider store={store}>
+    <ConnectedRouter resolver={new Resolver(environment)} />
+  </Provider>,
   mountNode
 );

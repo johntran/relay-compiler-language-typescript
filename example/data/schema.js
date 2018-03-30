@@ -74,7 +74,7 @@ const {nodeInterface, nodeField} = nodeDefinitions(
       return GraphQLUser;
     } else if (obj instanceof BlogPost) {
       return BlogPostType;
-    }
+    } 
     return null;
   }
 );
@@ -191,13 +191,9 @@ const GraphQLUser = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-const Query = new GraphQLObjectType({
-  name: 'Query',
+const ViewerType = new GraphQLObjectType({
+  name: 'ViewerTwo', 
   fields: {
-    viewer: {
-      type: GraphQLUser,
-      resolve: () => getViewer(),
-    },
     blogPost: {
       type: BlogPostType,
       args: {
@@ -208,6 +204,19 @@ const Query = new GraphQLObjectType({
         const blogPost = convertWpBlogPostPayloadToBlogPost(payload);
         return blogPost;
       },
+    },
+  }
+})
+
+const Query = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    viewer: {
+      type: GraphQLUser,
+      resolve: () => getViewer(),
+    },
+    viewerTwo: {
+      type: ViewerType,
     },
     node: nodeField,
   },

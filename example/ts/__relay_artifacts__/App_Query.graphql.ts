@@ -1,9 +1,9 @@
 /* tslint:disable */
 
 import { ConcreteRequest } from "relay-runtime";
-export type appQueryVariables = {
+export type App_QueryVariables = {
 };
-export type appQueryResponse = {
+export type App_QueryResponse = {
     readonly viewer: ({
     }) | null;
 };
@@ -11,7 +11,7 @@ export type appQueryResponse = {
 
 
 /*
-query appQuery {
+query App_Query {
   viewer {
     ...TodoApp_viewer
     id
@@ -98,13 +98,13 @@ v2 = {
 return {
   "kind": "Request",
   "operationKind": "query",
-  "name": "appQuery",
+  "name": "App_Query",
   "id": null,
-  "text": "query appQuery {\n  viewer {\n    ...TodoApp_viewer\n    id\n  }\n}\n\nfragment TodoApp_viewer on User {\n  id\n  totalCount\n  ...TodoListFooter_viewer\n  ...TodoList_viewer\n}\n\nfragment TodoListFooter_viewer on User {\n  id\n  completedCount\n  completedTodos: todos(status: \"completed\", first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n      }\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_viewer on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  totalCount\n  completedCount\n  ...Todo_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n",
+  "text": "query App_Query {\n  viewer {\n    ...TodoApp_viewer\n    id\n  }\n}\n\nfragment TodoApp_viewer on User {\n  id\n  totalCount\n  ...TodoListFooter_viewer\n  ...TodoList_viewer\n}\n\nfragment TodoListFooter_viewer on User {\n  id\n  completedCount\n  completedTodos: todos(status: \"completed\", first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n      }\n    }\n  }\n  totalCount\n}\n\nfragment TodoList_viewer on User {\n  todos(first: 2147483647) {\n    edges {\n      node {\n        id\n        complete\n        ...Todo_todo\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n  totalCount\n  completedCount\n  ...Todo_viewer\n}\n\nfragment Todo_todo on Todo {\n  complete\n  id\n  text\n}\n\nfragment Todo_viewer on User {\n  id\n  totalCount\n  completedCount\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
-    "name": "appQuery",
+    "name": "App_Query",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": [],
@@ -129,7 +129,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "appQuery",
+    "name": "App_Query",
     "argumentDefinitions": [],
     "selections": [
       {
@@ -299,5 +299,5 @@ return {
   }
 };
 })();
-(node as any).hash = '14aafc6977e28bcb7c5b2392f3fdae03';
+(node as any).hash = 'bf44832b5c3a5a27c0da56a196acc53c';
 export default node;
