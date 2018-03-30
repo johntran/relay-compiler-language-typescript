@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { graphql, createRefetchContainer } from 'react-relay';
+import BlogHeader from './BlogHeader';
 
 interface BlogPostPageProps {
   viewerTwo: {
@@ -26,6 +27,7 @@ class BlogPostPage extends React.Component<BlogPostPageProps, {}> {
     if (!this.props.viewerTwo.blogPost.isValidPage) return <div />;
     return (
       <div className="BlogPostPage-container">
+        <BlogHeader blogPost={this.props.viewerTwo.blogPost} />
         <div
           className="BlogPostPage-content"
           dangerouslySetInnerHTML={this.createContent()}
@@ -51,6 +53,7 @@ export default createRefetchContainer(
             hero
             preview
           }
+          ...BlogHeader_blogPost
           isValidPage
         }
       }
