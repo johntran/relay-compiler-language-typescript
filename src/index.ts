@@ -6,7 +6,7 @@ import * as TypeScriptGenerator from "./TypeScriptGenerator";
 
 export default function plugin(): PluginInterface {
   return {
-    inputExtensions: ["ts", "tsx"],
+    inputExtensions: ["js", "ts", "tsx"],
     outputExtension: "ts",
     findGraphQLTags: find,
     formatModule: formatGeneratedModule,
