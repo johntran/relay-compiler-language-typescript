@@ -48,6 +48,15 @@ import {
   renameTodo,
 } from './database';
 
+import {
+  getWpBlogBySlug,
+  convertWpBlogPostPayloadToBlogPost,
+} from './wordpress/wordpressService';
+
+import BlogPost from './wordpress/models/BlogPost'
+import BlogPostImages from './wordpress/models/BlogPostImages'
+
+
 const {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
     const {type, id} = fromGlobalId(globalId);
@@ -63,10 +72,72 @@ const {nodeInterface, nodeField} = nodeDefinitions(
       return GraphQLTodo;
     } else if (obj instanceof User) {
       return GraphQLUser;
+    } else if (obj instanceof BlogPost) {
+      return BlogPostType;
     }
     return null;
   }
 );
+
+const BlogPostImagesType = new GraphQLObjectType({
+  name: 'BlogPostImages',
+  description: 'Images for a blog post',
+  isTypeOf: object => object instanceof BlogPostImages,
+  fields: () => ({
+    preview: {
+      type: GraphQLString,
+      description: 'Thumbnail for Blog',
+    },
+    hero: {
+      type: GraphQLString,
+      description: 'Hero Image for Blog Ppst',
+    },
+  }),
+});
+
+
+const BlogPostType =  new GraphQLObjectType({
+  name: 'BlogPost',
+  description: 'A Blog Post',
+  isTypeOf: object => object instanceof BlogPost,
+  fields: () => ({
+    id: globalIdField('BlogPost'),
+    header: {
+      type: GraphQLString,
+      description: 'Blog Post Header/Title',
+    },
+    content: {
+      type: GraphQLString,
+      description: 'Blog Post content',
+    },
+    datePublished: {
+      type: GraphQLString,
+      description: 'Date Blog Post published',
+    },
+    category: {
+      type: GraphQLString,
+      description: 'Category of Blog Post',
+    },
+    slug: {
+      type: GraphQLString,
+      description: 'URL slug of Blog Post',
+    },
+    images: {
+      type: BlogPostImagesType,
+      description: 'Blog Post Images',
+    },
+    excerpt: {
+      type: GraphQLString,
+      description: 'Excerpt of content',
+    },
+    isValidPage: {
+      type: GraphQLBoolean,
+      description: 'Is true if the slug is valid in WP backend. Else false',
+    },
+  }),
+  interfaces: [nodeInterface],
+});
+
 
 const GraphQLTodo = new GraphQLObjectType({
   name: 'Todo',
@@ -126,6 +197,17 @@ const Query = new GraphQLObjectType({
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
+    },
+    blogPost: {
+      type: BlogPostType,
+      args: {
+        slug: { type: GraphQLString },
+      },
+      resolve: async (obj, { slug }) => {
+        const payload = await getWpBlogBySlug(slug);
+        const blogPost = convertWpBlogPostPayloadToBlogPost(payload);
+        return blogPost;
+      },
     },
     node: nodeField,
   },
